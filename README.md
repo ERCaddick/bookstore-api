@@ -17,10 +17,37 @@
 
 **DOCKER**
 1. Ensure that docker-desktop / docker engine is installed on local environment
+
 2. Open a terminal and set working directory to project directory
-    - docker build -t bookstore-api-image .
+    - docker build -t bookstore-api-image .  **OR** docker pull eythan0106/bookstore-api-image
     - docker run --name bookstore-container -p 8080:8080 bookstore-api-image
     - Quick Test with GET localhost:8080/ ->
+    {
+    "message": "Welcome to the Books API!"
+    }
+
+
+
+**K8s / Helm Charts**
+1. Enable K8s in Docker on local environment
+2. Open a terminal and set working directory to project directory
+3. Run Following Commands
+
+helm install bookstore-api-chart-release bookstore-api-chart
+
+**WINDOWS**
+### Get the pod name (One Liner)
+$POD_NAME = kubectl get pods --namespace default -l "app.kubernetes.io/name=bookstore-api-chart,app.kubernetes.io/instance=bookstore-api-chart-release" -o jsonpath="{.items[0].metadata.name}"
+
+### Get the container port
+
+$CONTAINER_PORT = kubectl get pod --namespace default $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}"
+
+### Port forward
+
+kubectl --namespace default port-forward $POD_NAME 8080:$CONTAINER_PORT
+
+- Quick Test with GET localhost:8080/ ->
     {
     "message": "Welcome to the Books API!"
     }
